@@ -22,15 +22,15 @@ export function createDefaultMap() {
 };
 
 /**
- * create a single formated node object with defaults
+ * Creates a single formatted node object with defaults.
  * 
  * @param {string} id - Unique node ID.
- * @param {string} tag - HTML tag name.
- * @aram {Object} options - optional attributes, textContent, and children.
- * @returns {Object} Node schema object
+ * @param {string} [tag="div"] - HTML tag name.
+ * @param {Object} [options={}] - Optional attributes, textContent, children, metadata.
+ * @returns {Object} Node schema object.
  */
 
-export function createNode(id, tag, options = {}) {
+export function createNode(id, tag = "div", options = {}) {
     return {
         id,
         tag,
@@ -41,12 +41,21 @@ export function createNode(id, tag, options = {}) {
     };
 }
 
-export function createAndValidateNode(id, tag, options = {}) {
+/**
+ * Creates a node and immediately validates its schema integrity.
+ * 
+ * @param {string} id - Unique node ID.
+ * @param {string} [tag="div"] - HTML tag name.
+ * @param {Object} [options={}] - Optional attributes, textContent, children, metadata.
+ * @returns {Object} Validated node object.
+ */
+
+export function createAndValidateNode(id, tag = "div", options = {}) {
     const node = createNode(id, tag, options);
     const result = validateNode(node);
 
     if (!result.isValid) {
-        throw new Error(`Failed to create node: '${result}'`)
+        throw new Error(`Failed to create node '${id}': ${result.errors.join(", ")}`);
     };
 
     return node;
@@ -56,7 +65,7 @@ export function createAndValidateNode(id, tag, options = {}) {
  * Validates if a given object is a valid flat map node
  * 
  * @param {Object} node
- * @return {{id: string, valid: boolean, errors:[string]}}
+ * @return {{id: string|undefined, isValid: boolean, errors: string[]}}
  */
 
 export function validateNode(node) {
@@ -69,10 +78,6 @@ export function validateNode(node) {
     };
 
     const errors = [];
-
-    if (!node || typeof node !== "object") {
-        return { valid: false, errors: ["Node mustbe a non-null object."] };
-    };
 
     if (typeof node.id !== "string" || !node.id.trim()) {
         errors.push("Node must have a non-empty string 'id'.");
