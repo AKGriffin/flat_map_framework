@@ -90,5 +90,38 @@ export class FlatMapStore {
         }
     }
 
+    /**
+     * Adds a new node to the store and attaches it to a parent node.
+     * 
+     * @param {Object} node - Valid node object to add.
+     * @param {Object} parentId - ID of the parent node.
+     * @param {number} [index=null] - Target index in parent's array.
+     */
+
+    addNode(node, parentId, index = null) {
+        if (!node || !node.id) {
+            throw new Error("Cannot add invalid node");
+        };
+
+        if (this._state.nodes[node.id]) {
+            throw new Error(`Node with ID '${node.id}' already exists.`);
+        };
+
+        const parent = this._state.nodes[parentId];
+        if (!parent) {
+            throw new Error(`Parent node '${parentId}' does not exist`);
+        };
+
+        this._state.nodes[node.id] = JSON.parse(JSON.stringify(node))
+
+        if (typeof index === "number" && index >= 0 && index <= parent.children.length) {
+            parent.children.splice(index, 0, node.id);
+        } else {
+            parent.children.push(node.id);
+        };
+
+        this._emit("node:add", { nodeId: node.id, parentId });
+    }
+
 }
 
