@@ -192,5 +192,44 @@ export class FlatMapStore {
 
         this._emit("node:remove", { nodeId, removedIds: idsToRemove });
     };
+
+    /**
+     * Moves a node to a new parent or specific index position.
+     * 
+     * @param {string} nodeId -- Target node ID to move.
+     * @param {string} newParentId -- Destination parent node ID.
+     * @param {number|null} [targetIndex=null] -- Position index in new parent's children array.
+     */
+
+    moveNode(nodeId, newParentId, targetIndex = null) {
+        if (nodeId === this._state.rootId) {
+            throw new Error("Cannot move root node.");
+        };
+
+        const node = this.state.nodes[nodeId];
+        const newParent = this._state.nodes[newParentId];
+
+        if (!node) {
+            throw new Error(`Node '${nodeIs}' not found.`);
+        };
+
+        if (!newParent) {
+            throw new Error(`Target parent node '${newParentNode}' not found.`);
+        };
+
+        Object.values(this._state.nodes).forEach(parentNode => {
+            if (Array.isArray(parentNode.children)) {
+                parentNode.children = parentNode.children.filter(childId => childId !== nodeId);
+            };
+        });
+
+        if (typeof targetIndex === "number" && targetIndex >= 0 && targetIndex <= newParent.children.length) {
+            newParent.children.splice(targetIndex, 0, nodeId);
+        } else {
+            newParent.children.push(nodeId);
+        };
+
+        this._emit("node:move", { nodeId, newParentId, targetIndex });
+    };
 };
 
