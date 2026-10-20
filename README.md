@@ -1,36 +1,26 @@
 # flat_map_framework
 
-Starting over with the knowledge gained from building the flat map framework allows us to eliminate architectural friction, streamline component interfaces, and build an even cleaner, more scalable foundation.
-
-Here is an architectural debrief on what to change, followed by a comprehensive **Master List of Milestones and Sub-Milestones** for building the optimized framework from scratch.
-
----
 
 ## Key Architectural Improvements
 
 1. **Schema Standardization & Strict Contracts**
-* *Previous*: Attributes like `class` or `action-type` were mixed into generic `attributes` objects alongside element properties.
-* *Improved*: Enforce a strict node schema that cleanly separates standard HTML attributes, internal metadata, and custom action triggers. Introduce runtime JSON Schema validation for all operations.
+Enforce a strict node schema that cleanly separates standard HTML attributes, internal metadata, and custom action triggers. Introduce runtime JSON Schema validation for all operations.
 
 
 2. **Decoupled Event Bus & Action Pipeline**
-* *Previous*: Custom event delegation was attached directly to DOM preview elements in `app.js`.
-* *Improved*: Implement a dedicated `EventBus` pub/sub module. Decouple event firing from DOM rendering so custom actions (`action-type`) can be tested, mocked, or logged independently of the preview UI.
+Implement a dedicated `EventBus` pub/sub module. Decouple event firing from DOM rendering so custom actions (`action-type`) can be tested, mocked, or logged independently of the preview UI.
 
 
 3. **Batch Mutations & History Compression**
-* *Previous*: Every atomic mutation recorded a full snapshot of the map dictionary in the undo/redo stack.
-* *Improved*: Introduce transaction-based mutations (`store.batch(() => { ... })`). Adding a complex template with 10 nodes records a single undo entry rather than cluttering history or performing redundant clones.
+ Introduce transaction-based mutations (`store.batch(() => { ... })`). Adding a complex template with 10 nodes records a single undo entry rather than cluttering history or performing redundant clones.
 
 
 4. **Normalized Component Registry**
-* *Previous*: Web Component registry attributes were read ad-hoc inside the renderer.
-* *Improved*: Treat registered Web Components as first-class citizens with formal prop definitions, default attributes, and slots, making component injection seamless.
+ Treat registered Web Components as first-class citizens with formal prop definitions, default attributes, and slots, making component injection seamless.
 
 
 5. **Unified Multi-View State**
-* *Previous*: Tree View and Dictionary View updated via individual manual render triggers.
-* *Improved*: Use a unified reactive UI rendering scheduler that re-renders all active views in a single microtask frame on state changes.
+Use a unified reactive UI rendering scheduler that re-renders all active views in a single microtask frame on state changes.
 
 
 
