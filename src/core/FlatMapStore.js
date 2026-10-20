@@ -123,5 +123,39 @@ export class FlatMapStore {
         this._emit("node:add", { nodeId: node.id, parentId });
     }
 
+    /**
+     * Updates and existing node's properties.
+     * 
+     * @param {string} nodeId - Target node ID.
+     * @param {Object} [updatess= {}] - Partial property updates.
+     */
+
+    updateNode(nodeId, updates = {}) {
+        const node = this._state.nodes[nodeId];
+        if (!node) {
+            throw new Error(`Node '${nodeId}' not found.`);
+        };
+
+        const { id, ...validUpdates } = updates;
+
+        if (validUpdates.attributes) {
+            node.attributes = { ...node.attributes, ...validUpdates.attributes };
+            delete validUpdates.attributes;
+        };
+
+        if (validUpdates.metadata) {
+            node.metadata = { ...node.metadata, ...validUpdates.metadata };
+            delete validUpdates.metadata;
+        }
+
+        Object.assign(node, validUpdates);
+
+        this._emit("node:update", { nodeId, updates });
+
+    };
+
+    /**
+     * 
+     */
 }
 
