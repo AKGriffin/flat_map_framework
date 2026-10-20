@@ -206,15 +206,15 @@ export class FlatMapStore {
             throw new Error("Cannot move root node.");
         };
 
-        const node = this.state.nodes[nodeId];
+        const node = this._state.nodes[nodeId];
         const newParent = this._state.nodes[newParentId];
 
         if (!node) {
-            throw new Error(`Node '${nodeIs}' not found.`);
+            throw new Error(`Node '${nodeId}' not found.`);
         };
 
         if (!newParent) {
-            throw new Error(`Target parent node '${newParentNode}' not found.`);
+            throw new Error(`Target parent node '${newParent}' not found.`);
         };
 
         Object.values(this._state.nodes).forEach(parentNode => {
