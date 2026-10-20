@@ -155,7 +155,42 @@ export class FlatMapStore {
     };
 
     /**
+     * Removes a node and recursively cleans up all child subtree references.
      * 
+     * @param {string} nodeId - Target node ID to remove
      */
-}
+
+    removeNode(nodeId) {
+        if (nodeId === this._state.rootId) {
+            throw new Error("Cannot remove root node.")
+        }
+
+        const node = this._state.nodes[nodeId];
+        if (!node) {
+            throw new Error(`Node '${nodeId}' not found.`)
+        };
+
+        const idsToRemove = [];
+        const collectDescendants = (id) => {
+            idsToRemove.push(id);
+            const targetNode = this._state.nodes[id];
+            if (targetNode && Array.isArray(targetNode.children)) {
+                targetNode.children.forEach(collectDescendants);
+            };
+        };
+        collectDescendants(nodeId);
+
+        Object.values(this._state.nodes).forEach(parentNode => {
+            if (Array.isArray(parentNode.children)) {
+                parentNode.children = parentNode.children.filter(childId => childId !== nodeId);
+            };
+        });
+
+        idsToRemove.forEach(id => {
+            delete this._state.nodes[id];
+        });
+
+        this._emit("node:remove", { nodeId, removedIds: idsToRemove });
+    };
+};
 
