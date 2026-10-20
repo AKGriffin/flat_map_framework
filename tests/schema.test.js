@@ -6,7 +6,7 @@ import {
     createAndValidateNode,
     validateNode,
     validateFlatMap
-} from "../src/core/schema.js";
+} from "../src/core/Schema.js";
 
 describe("Milestone 1.1: Schema & Factory Helpers", () => {
     test("createDefaultMap produces a valid flat map schema", () => {
